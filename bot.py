@@ -26,6 +26,16 @@ def run_bot():
         print(f'Logged in as {name}!\n'
               f'synced {len(synced)} command(s)')
 
+    @bot.tree.command(name='help')
+    async def help(interaction: discord.Interaction):
+        await interaction.response.send_message('Here is a list of the commands you can use this bot for!\n\n'
+                                                '`/song` - Allows you to add a song to the specified playlist. '
+                                                'Defaults to the current song if no link is provided\n\n'
+                                                '`/playlist` - Returns the playlist with the songs members of your '
+                                                'server have added using the `/song` command.\n\n'
+                                                '`/cover` - Returns the album cover of a song. '
+                                                'Defaults to the current song if no link is provided.')
+
     @bot.tree.command(name='playlist')
     async def playlist(interaction: discord.Interaction):
         await interaction.response.send_message('Here is the link to your playlist :)\n\n'
