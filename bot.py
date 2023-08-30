@@ -8,6 +8,16 @@ import typing
 ints = discord.Intents.all()
 
 
+async def not_playing(interaction: discord.Interaction):
+    await interaction.response.send_message('You aren\'t currently playing anything! Start playing a '
+                                            'song and try again, or paste a link in the `link` parameter')
+
+
+async def invalid_input(interaction: discord.Interaction):
+    await interaction.response.send_message('You have provided an invalid input. Please note that this bot is only '
+                                            'able to accept Spotify links as valid inputs.')
+
+
 def run_bot():
     token = 'DISCORD_TOKEN'
 
@@ -61,10 +71,7 @@ def run_bot():
         if link is None:
             track = spotify.current_playback()
             if track is None:
-                await interaction.response.send_message('You aren\'t currently playing anything! Start playing a '
-                                                        'song and try again, or use the `link` parameter to '
-                                                        'specify the cover you want to view by pasting the spotify '
-                                                        'link')
+                await not_playing(interaction)
             else:
                 album_cover = track["item"]["album"]["images"][0]["url"]
                 await interaction.response.send_message(album_cover)
@@ -89,7 +96,7 @@ def run_bot():
 
                 await interaction.response.send_message(album["images"][0]["url"])
             else:
-                pass
+                await invalid_input()
 
     @bot.tree.command(name='song')
     @app_commands.describe(link='provide the link to your song')
@@ -103,10 +110,7 @@ def run_bot():
         if link is None:
             track = spotify.current_playback()
             if track is None:
-                await interaction.response.send_message('You aren\'t currently playing anything! Start playing a '
-                                                        'song and try again, or use the `link` parameter to '
-                                                        'specify the song you want to add by pasting the spotify '
-                                                        'link')
+                await not_playing()
             else:
                 spotify_uri = track["item"]["uri"]
                 track = spotify.track(spotify_uri)
@@ -137,7 +141,7 @@ def run_bot():
                                                         f'Artist: `{track["artists"][0]["name"]}`\n\n'
                                                         f'{track["album"]["images"][0]["url"]}')
             else:
-                pass
+                await invalid_input()
 
         return
 
